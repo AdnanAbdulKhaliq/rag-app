@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bot, User, Send, Loader, FileText } from "lucide-react";
+import { Bot, User, Send, Loader, FileText, UserPlus } from "lucide-react";
 import "./App.css";
+import EmployeeForm from "./components/EmployeeForm";
 
 // --- Main App Component ---
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const messagesEndRef = useRef(null);
+  const sessionId = useRef(Date.now().toString());
 
   // Function to scroll to the latest message
   const scrollToBottom = () => {
@@ -44,7 +47,10 @@ export default function App() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question: input }),
+        body: JSON.stringify({
+          question: input,
+          session_id: sessionId.current,
+        }),
       });
 
       if (!response.ok) {
@@ -61,6 +67,50 @@ export default function App() {
       console.error("Failed to fetch from backend:", error);
       const errorMessage = {
         text: "Sorry, I'm having trouble connecting to my brain right now. Please try again later.",
+        isUser: false,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // --- Handle employee form submission ---
+  const handleEmployeeSubmit = async (formData) => {
+    const userMessage = {
+      text: `Add new employee: ${formData.first_name} ${formData.last_name} as ${formData.role}`,
+      isUser: true,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setShowEmployeeForm(false);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: `Add a new employee with the following details: First Name: ${formData.first_name}, Last Name: ${formData.last_name}, Role: ${formData.role}`,
+          session_id: sessionId.current,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      const botMessage = { text: data.answer, isUser: false };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Failed to add employee:", error);
+      const errorMessage = {
+        text: "Sorry, there was an error adding the employee. Please try again.",
         isUser: false,
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -122,23 +172,40 @@ export default function App() {
 
       {/* Input Form */}
       <footer className="chat-footer">
-        <form onSubmit={handleSendMessage} className="message-form">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about the leave policy..."
-            className="message-input"
-            disabled={isLoading}
+        {showEmployeeForm ? (
+          <EmployeeForm
+            onSubmit={handleEmployeeSubmit}
+            onCancel={() => setShowEmployeeForm(false)}
           />
-          <button
-            type="submit"
-            className="send-button"
-            disabled={isLoading || !input.trim()}
-          >
-            <Send className="send-icon" />
-          </button>
-        </form>
+        ) : (
+          <div className="message-form-container">
+            <form onSubmit={handleSendMessage} className="message-form">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask a question about the leave policy..."
+                className="message-input"
+                disabled={isLoading}
+              />
+              <button
+                type="submit"
+                className="send-button"
+                disabled={isLoading || !input.trim()}
+              >
+                <Send className="send-icon" />
+              </button>
+            </form>
+            <button
+              onClick={() => setShowEmployeeForm(true)}
+              className="add-employee-button"
+              disabled={isLoading}
+            >
+              <UserPlus className="button-icon" />
+              Add Employee
+            </button>
+          </div>
+        )}
       </footer>
     </div>
   );

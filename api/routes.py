@@ -3,7 +3,7 @@ import traceback
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from core.agent import rag_agent  # Import the final compiled agent
 
 
@@ -23,9 +23,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Store conversation history
+conversation_history = {}
+
 
 class Query(BaseModel):
     question: str
+    session_id: str = "default"  # Default session ID if none provided
 
 
 # --- API Endpoints ---
@@ -40,10 +44,26 @@ async def ask_agent_endpoint(query: Query):
     """API endpoint to interact with the RAG agent."""
     try:
         print(f"\n--- New Request Received: {query.question} ---")
-        messages = [HumanMessage(content=query.question)]
+
+        # Initialize conversation history for new sessions
+        if query.session_id not in conversation_history:
+            conversation_history[query.session_id] = []
+
+        # Add the new question to conversation history
+        conversation_history[query.session_id].append(
+            HumanMessage(content=query.question)
+        )
+
+        # Get the full conversation history for this session
+        messages = conversation_history[query.session_id]
+
+        # Get response from agent
         result = rag_agent.invoke({"messages": messages})
 
+        # Add the agent's response to conversation history
         final_answer = result["messages"][-1].content
+        conversation_history[query.session_id].append(AIMessage(content=final_answer))
+
         print(f"Final Answer: {final_answer}")
         return {"answer": final_answer}
 
