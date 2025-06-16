@@ -136,85 +136,6 @@ body {
   }
 }
 
-/* --- Employee Form Styles --- */
-.employee-form-container {
-  background-color: #1f2937;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.employee-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  color: #e5e7eb;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.form-input {
-  padding: 0.75rem;
-  background-color: #374151;
-  border: 2px solid transparent;
-  border-radius: 0.5rem;
-  color: #e5e7eb;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus {
-  border-color: #3b82f6;
-  outline: none;
-}
-
-.form-input::placeholder {
-  color: #9ca3af;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.submit-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #1d4ed8;
-}
-
-.cancel-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #4b5563;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.cancel-button:hover {
-  background-color: #374151;
-}
-
 /* --- Footer and Input Form --- */
 .chat-footer {
   padding: 1rem;
@@ -222,18 +143,11 @@ body {
   border-top: 1px solid #374151; /* gray-700 */
 }
 
-.message-form-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  max-width: 48rem;
-  margin: 0 auto;
-}
-
 .message-form {
   display: flex;
   align-items: center;
-  flex-grow: 1;
+  max-width: 48rem;
+  margin: 0 auto;
 }
 
 .message-input {
@@ -286,32 +200,4 @@ body {
 .send-icon {
   width: 1.5rem;
   height: 1.5rem;
-}
-
-.add-employee-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #059669; /* green-600 */
-  border: none;
-  border-radius: 0.5rem;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  white-space: nowrap;
-}
-
-.add-employee-button:hover {
-  background-color: #047857; /* green-700 */
-}
-
-.add-employee-button:disabled {
-  background-color: #065f46; /* green-800 */
-  cursor: not-allowed;
-}
-
-.button-icon {
-  width: 1.25rem;
-  height: 1.25rem;
 }
