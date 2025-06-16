@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 # It's a best practice to use a .env file for environment variables
-load_dotenv()
+load_dotenv(dotenv_path="app.env")
 
 # --- Environment Setup ---
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
