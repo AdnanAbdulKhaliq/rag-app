@@ -39,6 +39,8 @@ def get_retriever():
             loader = PyPDFLoader(PDF_PATH)
             pages = loader.load()
             print(f"PDF loaded with {len(pages)} pages.")
+            for i, page in enumerate(pages[:3]):
+                print(f"Page {i+1} content preview: {page.page_content[:300]}")
         except Exception as e:
             print(f"Error loading PDF: {e}")
             raise

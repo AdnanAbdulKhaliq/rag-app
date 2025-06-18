@@ -25,6 +25,9 @@ def call_llm(state: AgentState) -> AgentState:
     # Add the system prompt only if it's the first message
     messages = [SystemMessage(content=SYSTEM_PROMPT)] + list(state["messages"])
     response = llm_with_tools.invoke(messages)
+    print(f"LLM Response: {response.content}")
+    if hasattr(response, "tool_calls"):
+        print(f"Tool calls: {response.tool_calls}")
     return {"messages": [response]}
 
 
@@ -34,9 +37,11 @@ def take_action(state: AgentState) -> AgentState:
     tool_calls = state["messages"][-1].tool_calls
     results = []
     for t in tool_calls:
+        print(f"Tool call detected: name={t['name']}, args={t['args']}")
         if t["name"] not in tools_dict:
             result = "Incorrect Tool Name, Please Retry and Select tool from List of Available tools."
         else:
+            print(f"Executing tool: {t['name']} with args: {t['args']}")
             result = tools_dict[t["name"]].invoke(t["args"])
 
         results.append(

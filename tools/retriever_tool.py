@@ -4,9 +4,9 @@ from core.vectorstore import retriever
 
 
 @tool
-def retriever_tool(query: str) -> str:
-    """This tool searches and returns the information from the Leave Policy Template document."""
-    print(f"Executing retriever tool with query: '{query}'")
+def answer_leave_policy_question(query: str) -> str:
+    """Use this tool to answer ANY question about the Leave Policy Template document. This is the ONLY way to access information from the document. Always use this tool for document-related questions, no matter how simple or complex."""
+    print(f"Executing answer_leave_policy_question tool with query: '{query}'")
     docs = retriever.invoke(query)
 
     if not docs:

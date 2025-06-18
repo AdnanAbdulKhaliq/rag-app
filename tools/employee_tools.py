@@ -17,11 +17,7 @@ class NewEmployeeForm(BaseModel):
 
 @tool(args_schema=NewEmployeeForm)
 def add_new_employee_form(first_name: str, last_name: str, role: str) -> str:
-    """
-    Use this tool to add a new employee to the database.
-    It takes the employee's first name, last name, and role, and registers them.
-    The joining date is automatically set to the current date.
-    """
+    """Use this tool to add a new employee to the database. If a user wants to register or add an employee, present a form with fields for first name, last name, and role. If the user asks for a form, immediately call the add_new_employee_form tool with empty or placeholder values, so the UI can render the form fields."""
     print(f"Executing add_new_employee_form tool for {first_name} {last_name}...")
     try:
         # The joining date is automatically set to today
